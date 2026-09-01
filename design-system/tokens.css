@@ -1,60 +1,81 @@
 /* ==========================================================================
-   THE WAFFLE HOUSE — DESIGN TOKENS  (refined: Inter-only, full glass)
+   THE WAFFLE HOUSE — DESIGN TOKENS  (bright artisan café system)
    Single source of truth. Every other stylesheet reads from these.
+   Warm cream/beige canvas, gold/honey/chocolate accents, editorial serif
+   + Inter + DM Mono type system — replaces the earlier dark/cinematic
+   palette entirely. Variable NAMES are kept stable across that switch so
+   every file that already reads var(--wh-*) picks up the new look for
+   free; only the values below changed.
    ========================================================================== */
 
 :root {
-  /* ---- Color: ground ------------------------------------------------------- */
-  --wh-bg-deep:     #040302;
-  --wh-bg:          #080705;
-  --wh-bg-raised:   #100e0b;
-  --wh-surface:     #161310;
-  --wh-surface-raised: #1e1a14;
-  --wh-overlay:     rgba(4, 3, 2, 0.75);
+  /* ---- Color: ground — bright café canvas -----------------------------
+     Three layers of warm light, never flat/pure white and never dark:
+     bg-deep = page body, bg = standard section ground, bg-raised = a
+     section that sits "up" a level (soft beige panels). Surface /
+     surface-raised are actual card tones — closer to white so photography
+     and product cards pop off the beige ground.
+  ------------------------------------------------------------------------ */
+  --wh-bg-deep:     #fefcf8;   /* Warm White */
+  --wh-bg:          #fff8ee;  /* Cream */
+  --wh-bg-raised:   #f3e8d7;  /* Soft Beige */
+  --wh-surface:     #fffdf9;  /* card ground — near-white so it lifts off beige */
+  --wh-surface-raised: #fff3de; /* hover/raised card state */
+  --wh-overlay:     rgba(107, 68, 35, 0.08);
 
-  /* ---- Color: accent -------------------------------------------------------- */
-  --wh-honey-gold:  #f0ca7a;
-  --wh-gold:        #e8b45a;
-  --wh-caramel:     #b87432;
-  --wh-burnt-amber: #8a4b1f;
-  --wh-berry:       #c2384a;
-  --wh-blueberry:   #3e5c99;
-  --wh-mint:        #6fa487;
-  --wh-chocolate-dark: #2a1a0e;
+  /* ---- Color: accent — waffle gold / honey / chocolate brown ----------- */
+  --wh-honey-gold:  #d89b2b;  /* Honey */
+  --wh-gold:        #e7b347;  /* Waffle Gold — primary accent */
+  --wh-caramel:     #a67c52;  /* Coffee Caramel — secondary accent */
+  --wh-burnt-amber: #6b4423;  /* Chocolate Brown — deepest accent */
+  --wh-berry:       #d84361;  /* Strawberry Red */
+  --wh-blueberry:   #6b5b95;  /* Blueberry Purple */
+  --wh-nutella:     #5c3a21;  /* Nutella Brown */
+  --wh-mint:        #6fa487;  /* decorative only */
+  --wh-chocolate-dark: #4a2f18; /* decorative only — deep drip/accent gradients */
 
-  /* ---- Color: text ---------------------------------------------------------- */
-  --wh-text-primary:   #f5f0e8;
-  --wh-text-secondary: #b0a498;
-  --wh-text-muted:     #72685e;
+  /* ---- Color: text — warm chocolate ink, never cold black -------------- */
+  --wh-text-primary:   #3a2a1d;
+  --wh-text-secondary: #6b5847;
+  --wh-text-muted:     #9c8b7a;
 
-  /* ---- Color: structure ----------------------------------------------------- */
-  --wh-border:        rgba(232, 180, 90, 0.10);
-  --wh-border-strong: rgba(232, 180, 90, 0.22);
-  --wh-focus-ring:    #e8b45a;
-  --wh-on-gold:       #1a0e02;
+  /* ---- Color: structure -------------------------------------------------- */
+  --wh-border:        rgba(107, 68, 35, 0.12);
+  --wh-border-strong: rgba(107, 68, 35, 0.22);
+  --wh-focus-ring:    #d89b2b;
+  --wh-on-gold:       #2b1b0c;
 
-  /* ---- Glass surfaces — unified recipe across every panel ------------------ */
-  --wh-glass-bg:        rgba(12, 10, 7, 0.52);
-  --wh-glass-bg-mid:    rgba(14, 11, 8, 0.68);
-  --wh-glass-bg-solid:  rgba(8, 7, 5, 0.94);
-  --wh-glass-border:    rgba(232, 180, 90, 0.14);
-  --wh-glass-border-hover: rgba(232, 180, 90, 0.30);
-  --wh-glass-blur:      blur(24px) saturate(150%);
-  --wh-glass-blur-heavy: blur(40px) saturate(160%);
+  /* ---- Glass surfaces — light café glass, per brand spec ---------------
+     rgba(255,255,255,0.7) + blur is the exact floating-navbar recipe;
+     every other glass panel (cards, mobile menu, badges) reads from the
+     same trio so the whole site shares one "café glass" language.
+  ------------------------------------------------------------------------ */
+  --wh-glass-bg:        rgba(255, 255, 255, 0.7);
+  --wh-glass-bg-mid:    rgba(255, 255, 255, 0.82);
+  --wh-glass-bg-solid:  rgba(255, 252, 248, 0.94);
+  --wh-glass-border:    rgba(107, 68, 35, 0.10);
+  --wh-glass-border-hover: rgba(231, 179, 71, 0.45);
+  --wh-glass-blur:      blur(16px) saturate(140%);
+  --wh-glass-blur-heavy: blur(22px) saturate(150%);
 
-  /* ---- Hero gradient aliases ----------------------------------------------- */
-  --wh-maple-1: var(--wh-honey-gold);
+  /* ---- Hero gradient aliases — warm honey drizzle CTA ------------------- */
+  --wh-maple-1: #f6d189;
   --wh-maple-2: var(--wh-gold);
-  --wh-maple-3: var(--wh-burnt-amber);
-  --wh-cocoa-dust: rgba(138, 75, 31, 0.55);
-  --wh-choc-flake: #2a1a0e;
-  --wh-berry-red:  #a32f42;
-  --wh-berry-blue: #33415c;
+  --wh-maple-3: var(--wh-honey-gold);
+  --wh-cocoa-dust: rgba(107, 68, 35, 0.4);
+  --wh-choc-flake: var(--wh-burnt-amber);
+  --wh-berry-red:  var(--wh-berry);
+  --wh-berry-blue: var(--wh-blueberry);
 
-  /* ---- Typography — Inter only --------------------------------------------- */
-  --font-display: "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-body:    "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-mono:    "Inter", "Segoe UI", system-ui, sans-serif;
+  /* ---- Type families -----------------------------------------------------
+     Display: editorial serif for headlines/section titles — Paris café /
+     Belgian dessert-house personality. Body: Inter for maximum
+     readability. Mono: DM Mono for prices, ingredient tags, small labels,
+     and coordinates ("Shivmandir, Siliguri").
+  ---------------------------------------------------------------------- */
+  --font-display: "Playfair Display", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body:    "Inter", "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-mono:    "DM Mono", "Inter", "Segoe UI", monospace;
 
   /* ---- Type scale ----------------------------------------------------------- */
   --fs-caption:   0.8125rem;
@@ -93,12 +114,12 @@
   --radius-xl:   28px;
   --radius-pill: 999px;
 
-  /* ---- Elevation ----------------------------------------------------------- */
-  --shadow-card:   0 20px 40px -20px rgba(0, 0, 0, 0.6);
-  --shadow-raised: 0 32px 64px -24px rgba(0, 0, 0, 0.7);
-  --shadow-glass:  0 8px 32px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(232, 180, 90, 0.08);
-  --glow-caramel:  radial-gradient(circle, rgba(184, 116, 50, 0.3), transparent 70%);
-  --glow-gold:     radial-gradient(circle, rgba(232, 180, 90, 0.2), transparent 70%);
+  /* ---- Elevation — soft, warm, low-opacity (never heavy black shadow) ----- */
+  --shadow-card:   0 12px 28px -16px rgba(107, 68, 35, 0.18);
+  --shadow-raised: 0 20px 44px -18px rgba(107, 68, 35, 0.22);
+  --shadow-glass:  0 8px 28px -10px rgba(107, 68, 35, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --glow-caramel:  radial-gradient(circle, rgba(166, 124, 82, 0.25), transparent 70%);
+  --glow-gold:     radial-gradient(circle, rgba(231, 179, 71, 0.22), transparent 70%);
 
   /* ---- Motion -------------------------------------------------------------- */
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
@@ -118,5 +139,5 @@
   --float-amplitude-sm:    6px;
   --float-amplitude-md:    12px;
   --cursor-glow-radius:    110px;
-  --cursor-glow-color:     rgba(232, 180, 90, 0.30);
+  --cursor-glow-color:     rgba(231, 179, 71, 0.22);
 }

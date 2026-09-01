@@ -43,7 +43,7 @@
   border: 1px solid var(--wh-glass-border);
   backdrop-filter: var(--wh-glass-blur-heavy);
   -webkit-backdrop-filter: var(--wh-glass-blur-heavy);
-  box-shadow: var(--shadow-glass), 0 1px 0 rgba(232, 180, 90, 0.06) inset;
+  box-shadow: var(--shadow-glass), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
   transition:
     background var(--dur-base) var(--ease-standard),
     box-shadow var(--dur-base) var(--ease-standard),
@@ -51,8 +51,8 @@
 }
 .site-nav.is-scrolled .site-nav__inner {
   background: var(--wh-glass-bg-solid);
-  border-color: rgba(232, 180, 90, 0.18);
-  box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(232, 180, 90, 0.08) inset;
+  border-color: rgba(231, 179, 71, 0.22);
+  box-shadow: 0 12px 32px -16px rgba(107, 68, 35, 0.24), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
 }
 .site-nav__brand {
   font-family: var(--font-body);
@@ -157,22 +157,19 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
 
 .hero__bg {
   position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(155deg, var(--wh-bg) 0%, var(--wh-bg-deep) 100%);
+  /* Bright café canvas — warm white easing into soft beige, never dark. */
+  background: linear-gradient(155deg, var(--wh-bg-deep) 0%, var(--wh-bg-raised) 100%);
 }
-.hero__vignette {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(ellipse 75% 70% at 62% 45%, transparent 45%, rgba(0, 0, 0, 0.48) 100%);
-}
-.hero__grain {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  opacity: 0.045; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
+/* No vignette, no film grain here on purpose — those were part of the
+   earlier dark/cinematic direction this brief explicitly retires. The
+   hero should read as airy, bright, softly lit, not moody. */
+.hero__vignette { display: none; }
+.hero__grain { display: none; }
 .hero__glow {
   position: absolute; z-index: 1; top: 8%; right: -6%;
   width: 56%; aspect-ratio: 1 / 1; pointer-events: none;
-  background: radial-gradient(circle, rgba(232, 180, 90, 0.18), rgba(184, 116, 50, 0.06) 45%, transparent 70%);
+  /* A soft afternoon-café glow, not a spotlight — barely-there gold warmth. */
+  background: radial-gradient(circle, rgba(231, 179, 71, 0.16), rgba(216, 155, 43, 0.05) 45%, transparent 70%);
 }
 
 .hero__grid {
@@ -221,26 +218,34 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
 }
 .hero__ctas { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2); }
 
-/* Primary CTA */
+/* Hero CTAs — shared layout only here; fill/outline styling stays with
+   .btn--primary / .btn--hero-outline so both hero buttons keep their own
+   look. (Bug fix: this used to set `background`/`color`/`box-shadow`
+   directly on .hero__cta, which — being the same specificity as
+   .btn--hero-outline and later in the cascade — painted the gold gradient
+   over the "Visit Us" outline button too, instead of just "View Menu".) */
 .hero__cta {
   position: relative;
-  background: linear-gradient(160deg, var(--wh-honey-gold), var(--wh-gold) 55%, var(--wh-burnt-amber));
-  color: var(--wh-on-gold);
   padding-inline: var(--space-5);
   font-weight: 500;
+  transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard);
+}
+.hero__cta.btn--primary {
+  background: linear-gradient(160deg, var(--wh-honey-gold), var(--wh-gold) 55%, var(--wh-burnt-amber));
+  color: var(--wh-on-gold);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.38),
     0 16px 28px -12px rgba(138, 75, 31, 0.52),
     0 0 36px -10px rgba(232, 180, 90, 0.2);
-  transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard);
 }
-.hero__cta:hover {
+.hero__cta.btn--primary:hover {
   transform: translateY(-2px);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.44),
     0 20px 36px -12px rgba(138, 75, 31, 0.62),
     0 0 50px -8px rgba(232, 180, 90, 0.28);
 }
+.hero__ctas .btn--hero-outline:hover { transform: translateY(-2px); }
 
 /* Hero glass stat badge */
 .hero__badge {
@@ -298,18 +303,6 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
   aspect-ratio: 2816 / 1536;
   z-index: 2;
 }
-.hero__waffle-frame { position: absolute; inset: 0; overflow: hidden; }
-.hero__waffle {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  mask-image: radial-gradient(ellipse 78% 82% at 50% 46%, black 58%, transparent 96%);
-  -webkit-mask-image: radial-gradient(ellipse 78% 82% at 50% 46%, black 58%, transparent 96%);
-}
-.hero__waffle-scrim {
-  position: absolute; inset: 0; pointer-events: none;
-  background:
-    linear-gradient(200deg, transparent 30%, rgba(4, 3, 2, 0.52) 100%),
-    linear-gradient(20deg, transparent 55%, rgba(138, 75, 31, 0.14) 100%);
-}
 
 .hero__particles { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
 .particle { position: absolute; transform: translate(-50%, -50%); }
@@ -328,15 +321,28 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
   filter: blur(20px); pointer-events: none; z-index: 0;
 }
 
-/* Standalone tilt-wrapper ref from Hero.tsx */
-.hero__waffle-frame { display: contents; }
+/* Waffle frame — fills .hero__visual; the flex centering itself comes from
+   the inline style on the element in Hero.tsx, this just gives it a real
+   positioned box (a plain CSS rule can't override that inline `display`,
+   but it can still set `position`, which the inline style doesn't touch). */
+.hero__waffle-frame { position: absolute; inset: 0; }
 .hero__waffle {
   max-width: 72%; height: auto;
   object-fit: contain; display: block;
   margin: 0 auto; border: none; outline: none; box-shadow: none;
-  user-select: none; pointer-events: none;
-  filter: drop-shadow(0 40px 55px rgba(0, 0, 0, 0.75)) drop-shadow(0 10px 22px rgba(140, 78, 12, 0.2));
-  transition: filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  user-select: none;
+  /* A soft, warm shadow like a plate resting on a sunlit café table —
+     not a heavy black cinematic drop-shadow. */
+  filter: drop-shadow(0 28px 40px rgba(107, 68, 35, 0.22)) drop-shadow(0 8px 16px rgba(107, 68, 35, 0.14));
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+/* Smooth hover — a gentle lift + a slightly deeper, warmer shadow. Hovered
+   on the frame (not the image) so the whole visual area is the hit zone,
+   not just the waffle's own opaque pixels. */
+.hero__waffle-frame:hover .hero__waffle {
+  transform: scale(1.035);
+  filter: drop-shadow(0 34px 48px rgba(107, 68, 35, 0.26)) drop-shadow(0 12px 22px rgba(231, 179, 71, 0.28));
 }
 
 .hero__ctas .btn--hero-outline {
@@ -429,25 +435,25 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
   background: var(--wh-glass-bg-mid);
   backdrop-filter: var(--wh-glass-blur-heavy);
   -webkit-backdrop-filter: var(--wh-glass-blur-heavy);
-  box-shadow: var(--shadow-glass), 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-glass), 0 24px 48px -20px rgba(107, 68, 35, 0.22);
   border: 1px solid var(--wh-glass-border);
   transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 350ms, border-color 350ms;
 }
 .menu-slide[data-pos="center"] .menu-slide__card {
   border-color: var(--wh-glass-border-hover);
   box-shadow:
-    0 0 0 1px rgba(232, 180, 90, 0.22),
-    0 30px 70px -20px rgba(0, 0, 0, 0.6),
-    0 0 48px rgba(232, 180, 90, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 0 0 1px rgba(231, 179, 71, 0.28),
+    0 24px 56px -20px rgba(107, 68, 35, 0.26),
+    0 0 40px rgba(231, 179, 71, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 .menu-slide[data-pos="center"] .menu-slide__card:hover {
   transform: translateY(-10px) scale(1.02);
   box-shadow:
     0 0 0 1px var(--wh-glass-border-hover),
-    0 40px 80px -20px rgba(0, 0, 0, 0.65),
-    0 0 60px rgba(232, 180, 90, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 32px 64px -20px rgba(107, 68, 35, 0.3),
+    0 0 52px rgba(231, 179, 71, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .menu-slide__media { position: relative; height: 360px; overflow: hidden; background: var(--wh-surface); }
@@ -656,11 +662,15 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
 .masonry-tile__trigger:focus-visible { outline: 2px solid var(--wh-focus-ring); outline-offset: -2px; }
 .masonry-tile__overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(4, 3, 2, 0.82), transparent 55%);
+  /* Intentionally a dark warm scrim regardless of the site's light theme —
+     this sits directly on a food photo so it needs to stay dark enough for
+     the light caption text to read, same idea as a caption bar on a
+     printed photo spread. */
+  background: linear-gradient(to top, rgba(58, 42, 29, 0.85), transparent 55%);
   opacity: 0; transition: opacity var(--dur-base) var(--ease-standard);
   display: flex; align-items: center; gap: var(--space-1); justify-content: flex-end;
   padding: var(--space-3); font-size: 0.8rem; font-weight: 400;
-  color: var(--wh-text-primary);
+  color: #fff8ee;
 }
 .masonry-tile:hover .masonry-tile__overlay,
 .masonry-tile__trigger:focus-visible .masonry-tile__overlay { opacity: 1; }
@@ -803,15 +813,12 @@ main section { scroll-margin-top: clamp(80px, 10vw, 110px); }
   border: 1px solid var(--wh-glass-border);
   box-shadow: var(--shadow-glass);
 }
-.visit-map .map-fill { position: absolute; inset: 0; background: radial-gradient(circle at 60% 40%, var(--wh-surface-raised), var(--wh-bg)); }
-.visit-map .pin { position: absolute; top: 44%; left: 50%; width: 13px; height: 13px; border-radius: 50%; background: var(--wh-gold); box-shadow: 0 0 0 7px rgba(232, 180, 90, 0.18); }
-.visit-map .map-label {
-  position: absolute; bottom: var(--space-3); left: var(--space-3);
-  font-size: 0.75rem; font-weight: 400; color: var(--wh-text-primary);
-  background: var(--wh-glass-bg);
-  backdrop-filter: var(--wh-glass-blur); -webkit-backdrop-filter: var(--wh-glass-blur);
-  border: 1px solid var(--wh-glass-border);
-  padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm);
+.visit-map__frame {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: none; display: block;
+  /* Warm the map tiles slightly so the embed doesn't read as a cold grey
+     rectangle dropped into an otherwise warm page. */
+  filter: sepia(12%) saturate(88%) brightness(1.02);
 }
 
 .visit-services { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-6); }

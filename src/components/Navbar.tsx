@@ -9,40 +9,56 @@ import {
 } from "framer-motion";
 
 const LINKS = [
-  { href: "#gallery", label: "Our Waffles" },
-  { href: "#experience", label: "Café Experience" },
+  { href: "#hero", label: "Home" },
   { href: "#menu", label: "Menu" },
-  { href: "#visit", label: "Locations" },
+  { href: "#story", label: "Story" },
+  { href: "#gallery", label: "Gallery" },
+  { href: "#reviews", label: "Reviews" },
+  { href: "#visit", label: "Visit" },
 ];
 
-/* ─── Animated underline that slides between active items ─────────────── */
+/* ─── Animated underline that slides between active items ───────────────
+   Position is computed directly from the actual link element at the
+   moment of the event (hover, or activeId change) — no id→ref lookup
+   table in between. The previous version read refs.current[id] inside a
+   separate useEffect keyed on [hovered, activeId]; that indirection meant
+   a fast pointer move to link B could still be reading the layout for
+   link A (whichever render's effect happened to run), landing the dot
+   one link behind wherever the pointer actually was. Measuring the
+   hovered <a> synchronously in its own event handler removes that whole
+   class of staleness. */
 
 function NavLinks({ activeId }: { activeId: string }) {
-  const [hovered, setHovered] = useState<string | null>(null);
+  const ulRef = useRef<HTMLUListElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
-  const refs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
-  // Move the gold dot indicator to the active link
-  useEffect(() => {
-    const id = hovered ?? activeId;
-    const el = refs.current[id];
-    if (!el) { setIndicatorStyle((s) => ({ ...s, opacity: 0 })); return; }
-    const parent = el.closest("ul");
-    if (!parent) return;
-    const pRect = parent.getBoundingClientRect();
+  function moveIndicatorTo(el: HTMLElement | null) {
+    const ul = ulRef.current;
+    if (!el || !ul) { setIndicatorStyle((s) => ({ ...s, opacity: 0 })); return; }
+    const pRect = ul.getBoundingClientRect();
     const eRect = el.getBoundingClientRect();
     setIndicatorStyle({
       left: eRect.left - pRect.left + eRect.width / 2 - 3,
       width: 6,
       opacity: 1,
     });
-  }, [hovered, activeId]);
+  }
+
+  function moveIndicatorToActive() {
+    const activeEl = ulRef.current?.querySelector<HTMLAnchorElement>(`a[href="#${activeId}"]`) ?? null;
+    moveIndicatorTo(activeEl);
+  }
+
+  // Re-anchor to the active section whenever scroll-tracking changes it
+  // (and nothing is currently hovered).
+  useEffect(moveIndicatorToActive, [activeId]);
 
   return (
     <ul
+      ref={ulRef}
       className="site-nav__links"
       style={{ position: "relative" }}
-      onMouseLeave={() => setHovered(null)}
+      onMouseLeave={moveIndicatorToActive}
     >
       {LINKS.map((l) => {
         const id = l.href.slice(1);
@@ -50,11 +66,10 @@ function NavLinks({ activeId }: { activeId: string }) {
         return (
           <li key={l.href}>
             <a
-              ref={(el) => { refs.current[id] = el; }}
               className={`nav-item${isActive ? " is-active" : ""}`}
               href={l.href}
               aria-current={isActive ? "page" : undefined}
-              onMouseEnter={() => setHovered(id)}
+              onMouseEnter={(e) => moveIndicatorTo(e.currentTarget)}
             >
               {l.label}
             </a>
@@ -70,7 +85,7 @@ function NavLinks({ activeId }: { activeId: string }) {
           bottom: -2,
           height: 3,
           borderRadius: 99,
-          background: "var(--color-gold, #c8922a)",
+          background: "var(--wh-gold)",
           pointerEvents: "none",
         }}
         animate={indicatorStyle}
@@ -139,11 +154,11 @@ export function Navbar() {
             <motion.a
               className="btn btn--hero-outline"
               href="#visit"
-              aria-label="Book a table"
+              aria-label="Visit us"
               whileHover={{ y: -2, transition: { duration: 0.2 } }}
               whileTap={{ scale: 0.96 }}
             >
-              Book a Table
+              Visit Us
             </motion.a>
             <motion.button
               className="btn btn--icon site-nav__toggle"
@@ -239,7 +254,7 @@ export function Navbar() {
                   }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  Book a Table
+                  Visit Us
                 </motion.a>
               </motion.div>
             </motion.div>

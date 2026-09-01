@@ -109,25 +109,26 @@ export function Hero() {
           animate={isInView ? "visible" : "hidden"}
         >
           <motion.p className="hero__kicker" variants={ITEM_VARIANTS}>
-            Crafted Fresh Daily
+            Shivmandir, Siliguri
           </motion.p>
 
           <motion.h1 className="hero__title" variants={ITEM_VARIANTS}>
-            <span className="line"><span>The Art of</span></span>
-            <span className="line"><span>Belgian Waffles</span></span>
+            <span className="line"><span>Fresh Waffles.</span></span>
+            <span className="line"><span>Rich Coffee.</span></span>
+            <span className="line"><span>Sweet Moments.</span></span>
           </motion.h1>
 
           <motion.p className="hero__subtitle" variants={ITEM_VARIANTS}>
-            Handcrafted with premium ingredients, artisan syrups and fresh
-            coffee — an unforgettable indulgence.
+            A cozy dessert destination in Shivmandir serving handcrafted waffles,
+            cheesecakes, shakes and café favourites.
           </motion.p>
 
           <motion.div className="hero__ctas" variants={ITEM_VARIANTS}>
             <HoverButton href="#menu" className="btn btn--primary hero__cta">
-              Order Now
+              View Menu
             </HoverButton>
-            <HoverButton href="#story" className="btn btn--hero-outline hero__cta">
-              Our Story
+            <HoverButton href="#visit" className="btn btn--hero-outline hero__cta">
+              Visit Us
             </HoverButton>
           </motion.div>
         </motion.div>
