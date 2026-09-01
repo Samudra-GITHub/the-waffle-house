@@ -7,29 +7,50 @@ import {
   useInView,
 } from "framer-motion";
 
+import type { Variants } from "framer-motion";
+
 /* ─── Animation variants ──────────────────────────────────────────────── */
 
-const COPY_VARIANTS = {
+const COPY_VARIANTS: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-};
-
-const ITEM_VARIANTS = {
-  hidden: { opacity: 0, y: 22 },
   visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] as const },
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
+    },
   },
 };
 
-const IMAGE_VARIANTS = {
-  hidden: { opacity: 0, scale: 0.94, x: 24 },
+const ITEM_VARIANTS: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 22,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.72,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  },
+};
+
+const IMAGE_VARIANTS: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.94,
+    x: 24,
+  },
   visible: {
     opacity: 1,
     scale: 1,
     x: 0,
-    transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] as const, delay: 0.2 },
+    transition: {
+      duration: 1,
+      delay: 0.2,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
   },
 };
 
