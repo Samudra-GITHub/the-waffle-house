@@ -19,3 +19,6 @@ static-site/
 
 # Environment
 .env*
+node_modules/
+dist/
+.env
