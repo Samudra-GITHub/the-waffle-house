@@ -19,7 +19,7 @@ const ITEM_VARIANTS = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -29,7 +29,7 @@ const IMAGE_VARIANTS = {
     opacity: 1,
     scale: 1,
     x: 0,
-    transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1], delay: 0.2 },
+    transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] as const, delay: 0.2 },
   },
 };
 
