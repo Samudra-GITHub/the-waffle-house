@@ -1,0 +1,122 @@
+/* ==========================================================================
+   THE WAFFLE HOUSE — DESIGN TOKENS  (refined: Inter-only, full glass)
+   Single source of truth. Every other stylesheet reads from these.
+   ========================================================================== */
+
+:root {
+  /* ---- Color: ground ------------------------------------------------------- */
+  --wh-bg-deep:     #040302;
+  --wh-bg:          #080705;
+  --wh-bg-raised:   #100e0b;
+  --wh-surface:     #161310;
+  --wh-surface-raised: #1e1a14;
+  --wh-overlay:     rgba(4, 3, 2, 0.75);
+
+  /* ---- Color: accent -------------------------------------------------------- */
+  --wh-honey-gold:  #f0ca7a;
+  --wh-gold:        #e8b45a;
+  --wh-caramel:     #b87432;
+  --wh-burnt-amber: #8a4b1f;
+  --wh-berry:       #c2384a;
+  --wh-blueberry:   #3e5c99;
+  --wh-mint:        #6fa487;
+  --wh-chocolate-dark: #2a1a0e;
+
+  /* ---- Color: text ---------------------------------------------------------- */
+  --wh-text-primary:   #f5f0e8;
+  --wh-text-secondary: #b0a498;
+  --wh-text-muted:     #72685e;
+
+  /* ---- Color: structure ----------------------------------------------------- */
+  --wh-border:        rgba(232, 180, 90, 0.10);
+  --wh-border-strong: rgba(232, 180, 90, 0.22);
+  --wh-focus-ring:    #e8b45a;
+  --wh-on-gold:       #1a0e02;
+
+  /* ---- Glass surfaces — unified recipe across every panel ------------------ */
+  --wh-glass-bg:        rgba(12, 10, 7, 0.52);
+  --wh-glass-bg-mid:    rgba(14, 11, 8, 0.68);
+  --wh-glass-bg-solid:  rgba(8, 7, 5, 0.94);
+  --wh-glass-border:    rgba(232, 180, 90, 0.14);
+  --wh-glass-border-hover: rgba(232, 180, 90, 0.30);
+  --wh-glass-blur:      blur(24px) saturate(150%);
+  --wh-glass-blur-heavy: blur(40px) saturate(160%);
+
+  /* ---- Hero gradient aliases ----------------------------------------------- */
+  --wh-maple-1: var(--wh-honey-gold);
+  --wh-maple-2: var(--wh-gold);
+  --wh-maple-3: var(--wh-burnt-amber);
+  --wh-cocoa-dust: rgba(138, 75, 31, 0.55);
+  --wh-choc-flake: #2a1a0e;
+  --wh-berry-red:  #a32f42;
+  --wh-berry-blue: #33415c;
+
+  /* ---- Typography — Inter only --------------------------------------------- */
+  --font-display: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-body:    "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono:    "Inter", "Segoe UI", system-ui, sans-serif;
+
+  /* ---- Type scale ----------------------------------------------------------- */
+  --fs-caption:   0.8125rem;
+  --fs-body-sm:   0.9375rem;
+  --fs-body:      clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --fs-subtitle:  1.25rem;
+  --fs-menu-name: clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem);
+  --fs-h3:        clamp(1.375rem, 1.1rem + 1.1vw, 1.625rem);
+  --fs-h2:        clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  --fs-h1:        clamp(2.5rem, 1.6rem + 3.6vw, 4rem);
+  --fs-hero:      clamp(2.75rem, 1.2rem + 5.2vw, 5.5rem);
+
+  --lh-tight:   1.05;
+  --lh-heading: 1.18;
+  --lh-body:    1.72;
+  --ls-tight:   -0.024em;
+  --ls-snug:    -0.016em;
+  --ls-wide:    0.09em;
+
+  /* ---- Spacing — 8pt ------------------------------------------------------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  16px;
+  --space-4:  24px;
+  --space-5:  32px;
+  --space-6:  48px;
+  --space-7:  64px;
+  --space-8:  96px;
+  --space-9:  128px;
+  --space-10: 160px;
+
+  /* ---- Radius -------------------------------------------------------------- */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-pill: 999px;
+
+  /* ---- Elevation ----------------------------------------------------------- */
+  --shadow-card:   0 20px 40px -20px rgba(0, 0, 0, 0.6);
+  --shadow-raised: 0 32px 64px -24px rgba(0, 0, 0, 0.7);
+  --shadow-glass:  0 8px 32px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(232, 180, 90, 0.08);
+  --glow-caramel:  radial-gradient(circle, rgba(184, 116, 50, 0.3), transparent 70%);
+  --glow-gold:     radial-gradient(circle, rgba(232, 180, 90, 0.2), transparent 70%);
+
+  /* ---- Motion -------------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast:      140ms;
+  --dur-base:      280ms;
+  --dur-slow:      560ms;
+  --dur-cinematic: 1100ms;
+
+  /* ---- Layout -------------------------------------------------------------- */
+  --container-max:     1280px;
+  --container-padding: clamp(20px, 5vw, 96px);
+  --touch-target-min:  44px;
+
+  /* ---- Animation config ---------------------------------------------------- */
+  --scrollbar-height:      4px;
+  --float-amplitude-sm:    6px;
+  --float-amplitude-md:    12px;
+  --cursor-glow-radius:    110px;
+  --cursor-glow-color:     rgba(232, 180, 90, 0.30);
+}

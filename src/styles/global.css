@@ -1,0 +1,15 @@
+/* Tailwind supplies layout utilities only (see tailwind.config.js —
+   preflight and every color/typography/animation core plugin are
+   disabled there). The design-system files stay the single source of
+   truth for color, type, spacing values, radius, shadow and motion.
+   CSS requires every @import to precede all other statements, so the
+   @tailwind directives (which expand to real rules) have to come after. */
+@import "../../design-system/tokens.css";
+@import "../../design-system/layout.css";
+@import "../../design-system/components.css";
+@import "../../design-system/motion.css";
+@import "../../design-system/homepage.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

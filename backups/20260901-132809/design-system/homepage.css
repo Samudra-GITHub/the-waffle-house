@@ -1,0 +1,984 @@
+/* ==========================================================================
+   THE WAFFLE HOUSE — HOMEPAGE
+   Page-specific layout. Depends on tokens.css, layout.css, components.css,
+   motion.css (loaded first). Every rule here composes those tokens —
+   no new hex/px/ms values are introduced.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   WAFFLE HOUSE: LOADING SCREEN — ~2s cinematic intro, see
+   src/components/LoadingScreen.tsx. Sits above everything, including the
+   scroll-progress bar (z-index 200).
+--------------------------------------------------------------------------- */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--wh-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+.loading-screen__waffle { width: 96px; height: 96px; }
+.loading-screen__waffle svg { width: 100%; height: 100%; display: block; }
+.loading-screen__brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-subtitle);
+  letter-spacing: var(--ls-tight);
+  color: var(--wh-text-primary);
+  margin: 0;
+}
+.loading-screen__brand span { color: var(--wh-gold); }
+
+/* ---------------------------------------------------------------------------
+   NAV — floating glass pill over the hero, per the client's reference
+   design (referrence/Gemini_Generated_Image_kkjfexkkjfexkkjf.png). The
+   outer .site-nav is a full-width, pointer-events:none strip that only
+   provides top offset; the pill (.site-nav__inner) is what's painted and
+   interactive, so hero content behind the gaps on either side of it stays
+   clickable. Fixed rather than sticky/in-flow so the hero's own background
+   (and the syrup-drip artwork baked into its photo) runs full-bleed behind
+   the pill instead of stopping where the old in-flow bar used to sit —
+   see the `main section { scroll-margin-top }` rule below that compensates
+   anchor-link scrolling for the fixed offset this introduces.
+--------------------------------------------------------------------------- */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding-top: clamp(20px, 3vw, 40px);
+  pointer-events: none;
+}
+.site-nav__inner {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 10px;
+  gap: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--wh-hero-glass-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  box-shadow: 0 20px 40px -28px rgba(0, 0, 0, 0.6);
+  transition: background var(--dur-base) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard);
+}
+.site-nav.is-scrolled .site-nav__inner {
+  background: var(--wh-hero-glass-bg-solid);
+  box-shadow: 0 8px 24px -16px rgba(0, 0, 0, 0.7);
+}
+.site-nav__brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: var(--ls-tight);
+  text-decoration: none;
+  color: var(--wh-text-primary);
+  flex: none;
+}
+.site-nav__links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav__links .nav-item {
+  color: var(--wh-text-primary);
+  opacity: 0.78;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+}
+.site-nav__links .nav-item:hover { opacity: 1; }
+/* Subtle golden active indicator — a small dot under the current section's
+   link, not the fuller hover underline .nav-item::after already draws. */
+.site-nav__links .nav-item { position: relative; }
+.site-nav__links .nav-item[aria-current="page"] { opacity: 1; }
+.site-nav__links .nav-item[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--wh-gold);
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px 1px rgba(253, 184, 19, 0.6);
+}
+/* The dot above is the "subtle" indicator; suppress the shared full-width
+   underline (components.css .nav-item[aria-current]::after) here so the
+   two don't double up — hover still shows the underline as normal. */
+.site-nav__links .nav-item[aria-current="page"]::after { transform: scaleX(0); }
+.site-nav__links .nav-item[aria-current="page"]:hover::after { transform: scaleX(1); }
+.site-nav__actions { display: flex; align-items: center; gap: var(--space-3); flex: none; }
+.site-nav__toggle {
+  display: none;
+  background: transparent;
+  border-color: var(--wh-hero-glass-border);
+  color: var(--wh-text-primary);
+}
+.site-nav__toggle:hover { border-color: rgba(255, 255, 255, 0.4); }
+
+.btn--hero-outline {
+  background: transparent;
+  color: var(--wh-text-primary);
+  border-color: var(--wh-hero-glass-border);
+  padding: 10px 22px;
+  font-size: 0.9rem;
+}
+.btn--hero-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+@media (max-width: 1024px) {
+  .site-nav__links { display: none; }
+  .site-nav__toggle { display: inline-flex; }
+}
+
+@media (max-width: 480px) {
+  .site-nav__brand { font-size: 1.05rem; }
+  .site-nav__actions .btn--hero-outline { display: none; }
+}
+
+/* Mobile menu sheet — full-screen glass, slides from top */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: var(--wh-hero-glass-bg-solid);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-standard), transform var(--dur-base) var(--ease-standard);
+}
+.mobile-menu.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.mobile-menu a { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--wh-text-primary); text-decoration: none; }
+
+/* Fixed nav no longer occupies flow, so anchor-scrolled sections need their
+   own top offset to land clear of the floating pill. */
+main section {
+  scroll-margin-top: clamp(84px, 10vw, 120px);
+}
+
+/* ---------------------------------------------------------------------------
+   HERO — Phase A cinematic redesign (Awwwards-brief: Apple × Aesop × Ralph
+   Lauren Café). Same content/structure as before, but the composition is
+   now a single dimensional scene instead of copy+card: background →
+   atmosphere (vignette/grain) → warm glow → waffle → steam/drip → floating
+   ingredient particles → editorial UI details (badge/captions/stars/labels)
+   → copy → nav. That DOM/paint order IS the layering the brief asks for,
+   which is also what makes each piece independently scroll-animatable
+   later — nothing here is a flattened photo composite any more except the
+   waffle-on-plate photography itself (real food photography can't be
+   redrawn in CSS) and the steam/drip wisp (same reason).
+   Motion-prep note: the particle/glow/grain layers below are intentionally
+   inert (no animation, no framer-motion) — Phase A only prepares the
+   layers; the brief explicitly defers scroll choreography to a later pass.
+--------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding-block: clamp(110px, 15vw, 170px) var(--space-6);
+}
+
+/* 1. background gradient */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(160deg, var(--wh-hero-bg) 0%, var(--wh-hero-bg-deep) 130%);
+}
+/* 2a. vignette — darkens the edges so the waffle reads as the light source */
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 75% 70% at 62% 45%, transparent 45%, rgba(0, 0, 0, 0.5) 100%);
+}
+/* 2b. film grain — a static noise texture (SVG feTurbulence), not a CSS
+   filter: this is an asset layered with mix-blend-mode, never `filter:
+   contrast()/saturate()` grading the scene. */
+.hero__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+/* warm radial light seated behind the waffle — this is what makes the
+   photo feel like it belongs to the background instead of sitting in a
+   box on top of it. */
+.hero__glow {
+  position: absolute;
+  z-index: 1;
+  top: 8%;
+  right: -6%;
+  width: 56%;
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(240, 178, 74, 0.22), rgba(201, 129, 47, 0.08) 45%, transparent 72%);
+}
+
+.hero__grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: var(--space-6);
+  align-items: center;
+}
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 560px;
+  min-width: 0;
+  padding-left: clamp(0px, 2vw, 28px);
+}
+.hero__kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--wh-gold);
+  opacity: 0.85;
+}
+.hero__title {
+  font-size: clamp(3rem, 1.2rem + 6vw, 7rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--wh-text-primary);
+}
+.hero__title .line { display: block; overflow: hidden; }
+.hero__title .line span {
+  display: inline-block;
+  animation: wh-hero-title-in var(--dur-slow) var(--ease-out) both;
+}
+.hero__title .line:nth-child(1) span { animation-delay: 100ms; }
+.hero__title .line:nth-child(2) span { animation-delay: 220ms; }
+@keyframes wh-hero-title-in {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+.hero__subtitle {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--wh-hero-text-muted);
+  max-width: 34ch;
+  line-height: 1.7;
+}
+.hero__ctas { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2); }
+
+/* 4. CTA — warm maple gradient, tactile grounded shadow + soft ambient
+   bloom + a top inner highlight, instead of the previous neon glow. */
+.hero__cta {
+  position: relative;
+  background: linear-gradient(180deg, var(--wh-maple-1) 0%, var(--wh-maple-2) 60%, var(--wh-maple-3) 100%);
+  color: #1c0f04;
+  padding-inline: var(--space-6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -6px 10px -6px rgba(60, 28, 6, 0.5),
+    0 18px 30px -14px rgba(122, 65, 24, 0.55),
+    0 0 40px -10px rgba(240, 178, 74, 0.25);
+  transition: transform var(--dur-fast) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard);
+}
+.hero__cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -6px 10px -6px rgba(60, 28, 6, 0.5),
+    0 22px 36px -14px rgba(122, 65, 24, 0.65),
+    0 0 52px -8px rgba(240, 178, 74, 0.35);
+}
+
+/* 3–6. hero visual stage — a fixed-aspect stage (matches the source
+   photography's own proportions) so every % positioned layer inside scales
+   together with no fixed pixel sizes and no JS. The waffle bleeds past the
+   old card boundary entirely: no border, no radius, no background card. */
+.hero__visual {
+  position: relative;
+  width: calc(100% + var(--container-padding));
+  min-width: 0;
+  margin-right: calc(-1 * var(--container-padding));
+  aspect-ratio: 1250 / 1400;
+  z-index: 2;
+}
+.hero__waffle {
+  position: absolute;
+  left: 8%;
+  top: 50%;
+  width: 80.8%;
+  height: auto;
+  z-index: 3;
+}
+.hero__steam {
+  position: absolute;
+  left: 8%;
+  top: 16.4%;
+  width: 44.8%;
+  height: auto;
+  z-index: 4;
+}
+
+/* 5. floating ingredients — cocoa dust, chocolate flakes, berries, maple
+   droplets. Static for now (see the file-header motion-prep note). */
+.hero__particles { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.particle { position: absolute; transform: translate(-50%, -50%); }
+.particle--cocoa {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--wh-cocoa-dust);
+  box-shadow: 10px 6px 0 -1px var(--wh-cocoa-dust), -8px 10px 0 -2px var(--wh-cocoa-dust), 4px -8px 0 -2px var(--wh-cocoa-dust);
+}
+.particle--flake {
+  width: 12px; height: 8px; border-radius: 2px;
+  background: var(--wh-choc-flake);
+  transform: translate(-50%, -50%) rotate(-18deg);
+}
+.particle--berry-red { width: 10px; height: 10px; border-radius: 50%; background: var(--wh-berry-red); box-shadow: inset -2px -2px 3px rgba(0,0,0,0.35); }
+.particle--berry-blue { width: 9px; height: 9px; border-radius: 50%; background: var(--wh-berry-blue); box-shadow: inset -2px -2px 3px rgba(0,0,0,0.35); }
+.particle--droplet {
+  width: 6px; height: 9px; border-radius: 50% 50% 50% 0;
+  background: linear-gradient(160deg, var(--wh-maple-1), var(--wh-maple-3));
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.particle--sm { transform: translate(-50%, -50%) scale(0.65); }
+
+/* 7. luxury UI details */
+.hero__badge {
+  position: absolute;
+  z-index: 6;
+  left: 56.8%;
+  top: 24.3%;
+  width: 20%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: rgba(18, 18, 18, 0.4);
+  border: 1px solid rgba(240, 178, 74, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  text-align: center;
+}
+.hero__badge-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.85rem, 1.3vw, 1.3rem); color: var(--wh-gold); }
+.hero__badge-label { font-size: clamp(0.5rem, 0.65vw, 0.68rem); letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--wh-hero-text-muted); }
+
+.hero__caption {
+  position: absolute;
+  z-index: 6;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 0.85vw, 0.9rem);
+  letter-spacing: 0.04em;
+  color: var(--wh-hero-text-muted);
+  white-space: nowrap;
+}
+.hero__caption--crafted {
+  left: 53.2%;
+  top: 45.7%;
+  transform: rotate(-25deg);
+  transform-origin: left center;
+}
+.hero__caption-arc {
+  position: absolute;
+  z-index: 6;
+  left: 49.6%;
+  top: 75.7%;
+  width: 44%;
+  height: 18.6%;
+  overflow: visible;
+}
+.hero__caption-arc-text {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  fill: var(--wh-hero-text-muted);
+}
+
+.hero__star {
+  position: absolute;
+  z-index: 6;
+  color: var(--wh-gold);
+  opacity: 0.7;
+  line-height: 1;
+  pointer-events: none;
+}
+.hero__star--1 { left: 92%; top: 6%; font-size: clamp(0.9rem, 1.3vw, 1.3rem); }
+.hero__star--2 { left: 96%; top: 68%; font-size: clamp(0.7rem, 1vw, 1rem); }
+
+.hero__ingredient-label {
+  position: absolute;
+  z-index: 6;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: rgba(184, 183, 179, 0.55);
+  white-space: nowrap;
+}
+.hero__ingredient-label--1 { left: 3%; top: 1%; }
+.hero__ingredient-label--2 { left: 68%; top: 6%; }
+
+@media (max-width: 1024px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .hero__visual { order: -1; width: 100%; max-width: 480px; margin-inline: auto; }
+  .hero__copy { max-width: none; text-align: center; align-items: center; padding-left: 0; }
+  .hero__ctas { justify-content: center; }
+  .hero__glow { width: 80%; right: -20%; }
+}
+@media (max-width: 768px) {
+  .hero { padding-block: clamp(100px, 26vw, 140px) var(--space-6); }
+  .hero__ctas .btn { width: 100%; }
+  .hero__ingredient-label, .hero__star--2 { display: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   SIGNATURE MENU — 3D coverflow carousel
+   Locally-scoped brand tokens (--mc-*) so this section can carry its own
+   cream/gold/chocolate packaging as a deliberate "spotlight panel" without
+   touching the site-wide dark tokens the rest of the page reads from —
+   the page itself is not being redesigned, this one section is dressed
+   differently on purpose.
+   SPACING: header → carousel var(--space-6). Card 420×560 desktop.
+--------------------------------------------------------------------------- */
+.menu-carousel-section { overflow-x: clip; }
+
+.menu-carousel {
+  --mc-cream: #FFF8EE;
+  --mc-chocolate: #2B170D;
+  --mc-gold: #FDB813;
+  --mc-caramel: #7A4B2B;
+  --mc-white: #FFFFFF;
+  --mc-muted: #5F4632;
+  position: relative;
+  margin-top: var(--space-6);
+  padding-block: var(--space-8);
+  background: radial-gradient(ellipse 70% 60% at 50% 30%, #FFFDF7, var(--mc-cream));
+  outline: none;
+}
+.menu-carousel:focus-visible { box-shadow: inset 0 0 0 3px var(--mc-gold); }
+
+/* WAFFLE HOUSE: ambient glow behind the active card, pulsing 8s */
+.menu-carousel__glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 640px; height: 640px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(253, 184, 19, 0.35), transparent 70%);
+  opacity: 0.15;
+  pointer-events: none;
+  animation: wh-mc-glow-pulse 8s ease-in-out infinite;
+}
+@keyframes wh-mc-glow-pulse {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.3; }
+}
+
+/* Floating ingredients around the stage — reuses the drift/spin/sway
+   keyframes already defined for the hero (motion.css) */
+.menu-carousel__float { position: absolute; z-index: 6; pointer-events: none; }
+.menu-carousel__float--blueberry { top: 12%; left: 8%; width: 16px; height: 16px; border-radius: 50%; background: var(--wh-blueberry); }
+.menu-carousel__float--chip { top: 18%; right: 10%; width: 13px; height: 13px; border-radius: 4px; background: var(--mc-chocolate); }
+.menu-carousel__float--crumb { bottom: 16%; left: 12%; width: 11px; height: 11px; border-radius: 3px; background: var(--mc-caramel); opacity: 0.8; }
+.menu-carousel__float--mint { bottom: 10%; right: 9%; width: 18px; height: 13px; border-radius: 50% 50% 50% 4%; background: var(--wh-mint); }
+
+/* FloatingIngredients.tsx applies this to its "chip"/"crumb" items for
+   every host (hero and carousel alike) — "simplify particle effects" on
+   mobile (item 10). Kept host-agnostic rather than duplicated per host. */
+@media (max-width: 768px) {
+  .float-ingredient--hide-mobile { display: none; }
+}
+
+.menu-carousel__stage {
+  position: relative;
+  height: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1400px;
+}
+.menu-carousel__track {
+  position: relative;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+}
+
+.menu-slide {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 420px;
+  height: 560px;
+  will-change: transform, opacity, filter;
+  transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+              filter 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.menu-slide[data-pos="center"] { transform: translateX(0) rotateY(0) scale(1); opacity: 1; filter: none; z-index: 5; }
+.menu-slide[data-pos="left1"]  { transform: translateX(-260px) rotateY(24deg)  scale(0.84); opacity: 0.55; filter: blur(3px); z-index: 4; pointer-events: none; }
+.menu-slide[data-pos="right1"] { transform: translateX(260px)  rotateY(-24deg) scale(0.84); opacity: 0.55; filter: blur(3px); z-index: 4; pointer-events: none; }
+.menu-slide[data-pos="left2"]  { transform: translateX(-430px) rotateY(36deg)  scale(0.7); opacity: 0.25; filter: blur(5px); z-index: 3; pointer-events: none; }
+.menu-slide[data-pos="right2"] { transform: translateX(430px)  rotateY(-36deg) scale(0.7); opacity: 0.25; filter: blur(5px); z-index: 3; pointer-events: none; }
+.menu-slide[data-pos="hidden"] { transform: translateX(0) scale(0.6); opacity: 0; pointer-events: none; z-index: 1; }
+
+.menu-slide__card {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--mc-white);
+  box-shadow: 0 30px 60px -20px rgba(43, 23, 13, 0.35);
+  border: 2px solid transparent;
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 350ms, border-color 350ms;
+}
+.menu-slide[data-pos="center"] .menu-slide__card {
+  border-color: var(--mc-gold);
+  box-shadow: 0 0 0 1px rgba(253, 184, 19, 0.3), 0 30px 70px -20px rgba(43, 23, 13, 0.45), 0 0 44px rgba(253, 184, 19, 0.28);
+}
+.menu-slide[data-pos="center"] .menu-slide__card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 0 0 1px var(--mc-gold), 0 40px 80px -20px rgba(43, 23, 13, 0.5), 0 0 60px rgba(253, 184, 19, 0.4);
+}
+
+.menu-slide__media { position: relative; height: 360px; overflow: hidden; background: var(--mc-cream); }
+.menu-slide__media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* WAFFLE HOUSE: glossy sheen standing in for a mirrored reflection — a
+   true flipped-image reflection would double the paint cost for very
+   little payoff at this size, this reads the same at a glance */
+.menu-slide__reflection {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 35%;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.16));
+  pointer-events: none;
+}
+
+.menu-slide__tag, .menu-slide__price {
+  position: absolute;
+  z-index: 4;
+  font-family: var(--font-body);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+}
+.menu-slide__tag {
+  top: 14px; left: 14px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  color: var(--mc-gold);
+  background: rgba(43, 23, 13, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 5px 12px;
+}
+.menu-slide__price {
+  top: 14px; right: 14px;
+  font-size: 0.85rem;
+  color: var(--mc-chocolate);
+  background: var(--mc-gold);
+  padding: 6px 14px;
+  transition: transform 320ms var(--ease-standard);
+}
+.menu-slide[data-pos="center"] .menu-slide__card:hover .menu-slide__price { transform: scale(1.08); }
+
+.menu-slide__body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+.menu-slide__body h3 { font-family: var(--font-display); font-size: var(--fs-menu-name); font-weight: 600; color: var(--mc-chocolate); }
+.menu-slide__body p { font-size: var(--fs-body-sm); line-height: 1.5; color: var(--mc-muted); flex: 1; }
+.menu-slide__body .btn { margin-top: var(--space-1); align-self: flex-start; }
+
+/* WAFFLE HOUSE: chocolate drip → cream fill → topping pop, once per card,
+   on first view. Layout only here — fill colors, clip-path keyframes and
+   timing all live in MenuCard.tsx as Framer Motion variants/style, since
+   each card needs its own gradient id and its own independent trigger. */
+.menu-slide__drip { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* Arrows */
+.menu-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 7;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mc-white);
+  color: var(--mc-chocolate);
+  border: 1px solid rgba(43, 23, 13, 0.12);
+  box-shadow: 0 12px 24px -12px rgba(43, 23, 13, 0.3);
+  cursor: pointer;
+  transition: transform 200ms var(--ease-standard), background 200ms;
+}
+.menu-carousel__arrow:hover { background: var(--mc-gold); transform: translateY(-50%) scale(1.08); }
+.menu-carousel__arrow--prev { left: 2%; }
+.menu-carousel__arrow--next { right: 2%; }
+
+/* WAFFLE HOUSE: pagination dots styled as small chocolate drops */
+.menu-carousel__dots { display: flex; justify-content: center; gap: var(--space-2); margin-top: var(--space-5); }
+.menu-carousel__dots button {
+  width: 12px; height: 12px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(45deg);
+  background: var(--wh-caramel);
+  opacity: 0.4;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 200ms, background 200ms, transform 200ms;
+}
+.menu-carousel__dots button:hover { opacity: 0.7; }
+.menu-carousel__dots button[aria-selected="true"] { background: var(--wh-gold); opacity: 1; transform: rotate(45deg) scale(1.25); }
+
+@media (max-width: 1024px) {
+  .menu-carousel__stage { height: 540px; }
+  .menu-slide { width: 340px; height: 460px; }
+  .menu-slide__media { height: 300px; }
+  .menu-slide[data-pos="left1"]  { transform: translateX(-190px) rotateY(22deg)  scale(0.82); }
+  .menu-slide[data-pos="right1"] { transform: translateX(190px)  rotateY(-22deg) scale(0.82); }
+  .menu-slide[data-pos="left2"], .menu-slide[data-pos="right2"] { opacity: 0; pointer-events: none; }
+}
+
+@media (max-width: 768px) {
+  .menu-carousel__stage { height: 480px; perspective: none; }
+  .menu-slide { width: 85vw; max-width: 360px; height: 420px; }
+  .menu-slide__media { height: 260px; }
+  /* item 10 / responsive: single centered card on mobile, heavy blur off */
+  .menu-slide[data-pos="left1"], .menu-slide[data-pos="right1"],
+  .menu-slide[data-pos="left2"], .menu-slide[data-pos="right2"] {
+    opacity: 0; filter: none; pointer-events: none;
+  }
+  .menu-carousel__arrow { width: 40px; height: 40px; }
+  .menu-carousel__float--blueberry, .menu-carousel__float--mint { display: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   OUR STORY — split layout + pull-quote card
+   SPACING: column gap var(--space-6) desktop. copy internal gap var(--space-4).
+   copy → quote card var(--space-5).
+--------------------------------------------------------------------------- */
+.story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  align-items: center;
+}
+.story__media {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--wh-surface);
+  position: relative;
+}
+.story__media img { width: 100%; height: 100%; object-fit: cover; }
+.story__copy { display: flex; flex-direction: column; gap: var(--space-4); }
+.story__copy p.lede { font-size: var(--fs-subtitle); color: var(--wh-text-secondary); font-weight: 400; max-width: 48ch; }
+.story__copy ul.story-points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.story__copy ul.story-points li { display: flex; align-items: baseline; gap: var(--space-2); font-size: var(--fs-body-sm); color: var(--wh-text-secondary); }
+.story__copy ul.story-points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--wh-gold); flex: none; transform: translateY(-2px); }
+.story-quote {
+  margin-top: var(--space-2);
+  padding: var(--space-5);
+  background: var(--wh-surface-raised);
+  border-left: 3px solid var(--wh-gold);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-subtitle);
+  line-height: var(--lh-heading);
+  color: var(--wh-text-primary);
+}
+
+@media (max-width: 1024px) { .story { grid-template-columns: 1fr; gap: var(--space-6); } .story__media { aspect-ratio: 16 / 10; } }
+
+/* ---------------------------------------------------------------------------
+   WAFFLE EXPERIENCE — four equal feature cards
+   SPACING: grid gap var(--space-4). card internal padding var(--space-5).
+--------------------------------------------------------------------------- */
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+.feature-card {
+  background: var(--wh-surface);
+  border: 1px solid var(--wh-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform var(--dur-base) var(--ease-standard), border-color var(--dur-base);
+}
+.feature-card:hover { transform: translateY(-4px); border-color: var(--wh-border-strong); }
+.feature-card .icon-wrap { position: relative; width: 32px; height: 32px; }
+.feature-card .icon { width: 32px; height: 32px; color: var(--wh-gold); }
+.feature-card h3 { font-family: var(--font-display); font-size: var(--fs-subtitle); color: var(--wh-text-primary); }
+.feature-card p { font-size: var(--fs-body-sm); color: var(--wh-text-muted); }
+
+/* Coffee steam — only the "Perfect Coffee Pairings" card's icon carries it */
+.feature-card .coffee-steam { position: absolute; bottom: 60%; width: 2px; height: 10px; background: linear-gradient(to top, var(--wh-text-muted), transparent); border-radius: 2px; opacity: 0; }
+.feature-card .coffee-steam:nth-child(1) { left: 10px; }
+.feature-card .coffee-steam:nth-child(2) { left: 16px; }
+.feature-card .coffee-steam:nth-child(3) { left: 22px; }
+
+@media (max-width: 1024px) { .experience-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .experience-grid { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------------------
+   GALLERY — Pinterest masonry + Instagram CTA
+   SPACING: column-gap / row-gap var(--space-2) (tight, density by design).
+   grid → CTA var(--space-6).
+--------------------------------------------------------------------------- */
+.masonry { columns: 3 240px; column-gap: var(--space-2); }
+.masonry-tile {
+  break-inside: avoid;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  background: var(--wh-surface-raised);
+  transition: transform var(--dur-base) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard);
+}
+.masonry-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-raised); }
+.masonry-tile img { width: 100%; display: block; transition: transform var(--dur-slow) var(--ease-standard); }
+.masonry-tile:hover img { transform: scale(1.06); }
+/* WAFFLE HOUSE: reset so the tile's whole surface stays one clickable
+   button (opens the Lightbox) without looking or acting like a form control. */
+.masonry-tile__trigger {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+.masonry-tile__trigger:focus-visible {
+  outline: 2px solid var(--wh-focus-ring);
+  outline-offset: -2px;
+}
+.masonry-tile__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, var(--wh-overlay), transparent 55%);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-standard);
+  display: flex; align-items: center; gap: var(--space-1); justify-content: flex-end; padding: var(--space-3);
+  font-size: 0.8rem; font-weight: 500; color: var(--wh-text-primary);
+}
+.masonry-tile:hover .masonry-tile__overlay,
+.masonry-tile__trigger:focus-visible .masonry-tile__overlay { opacity: 1; }
+.gallery-cta { display: flex; justify-content: center; margin-top: var(--space-6); }
+
+@media (max-width: 1024px) { .masonry { columns: 2 200px; } }
+
+/* ---------------------------------------------------------------------------
+   GALLERY LIGHTBOX — the tapped tile's <motion.img> shares a layoutId with
+   the image here (see GallerySection.tsx / Lightbox.tsx), so it morphs in
+   place rather than fading in from nothing.
+--------------------------------------------------------------------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: rgba(20, 10, 5, 0.92);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+}
+.lightbox__frame { position: relative; max-width: min(90vw, 1000px); }
+.lightbox__image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 78vh;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+}
+.lightbox__caption {
+  margin: var(--space-3) 0 0;
+  text-align: center;
+  color: var(--wh-text-secondary);
+  font-size: var(--fs-body-sm);
+}
+.lightbox__close,
+.lightbox__arrow {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--wh-border-strong);
+  background: rgba(43, 23, 13, 0.6);
+  color: var(--wh-text-primary);
+  cursor: pointer;
+  transition: background var(--dur-base) var(--ease-standard), transform var(--dur-base) var(--ease-standard);
+}
+.lightbox__close:hover,
+.lightbox__arrow:hover { background: rgba(43, 23, 13, 0.85); transform: scale(1.06); }
+.lightbox__close:focus-visible,
+.lightbox__arrow:focus-visible { outline: 2px solid var(--wh-focus-ring); outline-offset: 2px; }
+.lightbox__close { top: var(--space-4); right: var(--space-4); }
+.lightbox__arrow--prev { left: var(--space-4); top: 50%; transform: translateY(-50%); }
+.lightbox__arrow--next { right: var(--space-4); top: 50%; transform: translateY(-50%); }
+.lightbox__arrow--prev:hover { transform: translateY(-50%) scale(1.06); }
+.lightbox__arrow--next:hover { transform: translateY(-50%) scale(1.06); }
+.lightbox__counter {
+  position: fixed;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--wh-text-muted);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+@media (max-width: 600px) {
+  .lightbox__arrow { width: 38px; height: 38px; }
+}
+
+/* ---------------------------------------------------------------------------
+   REVIEWS — glass testimonial cards, paired with the nav's scrolled-state
+   glass so the two "floating" surfaces on the page feel related.
+   SPACING: grid gap var(--space-4). card internal padding var(--space-5).
+--------------------------------------------------------------------------- */
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+.review-card {
+  padding: var(--space-5);
+  background: rgba(255, 248, 238, 0.045);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--wh-border);
+  border-radius: var(--radius-lg);
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.review-card .stars { color: var(--wh-gold); letter-spacing: 2px; }
+.review-card .quote { color: var(--wh-text-secondary); font-size: var(--fs-body-sm); line-height: var(--lh-body); flex: 1; }
+.review-card .who { display: flex; align-items: center; gap: var(--space-3); }
+.review-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex: none; background: var(--wh-surface-raised); }
+.review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.review-card .name { font-size: var(--fs-body-sm); font-weight: 600; color: var(--wh-text-primary); }
+.review-card .meta { font-size: 0.75rem; color: var(--wh-text-muted); }
+
+@media (max-width: 1024px) { .reviews-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 700px) { .reviews-grid { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------------------
+   VISIT US — four cream "spotlight" cards (Location, Hours, Instagram,
+   WhatsApp — same locally-scoped --mc-* token pattern as .menu-carousel,
+   for the same reason: one section dressed differently on purpose,
+   without touching the site-wide dark tokens), map below, gold CTA.
+   SPACING: header → cards var(--space-6). cards → map var(--space-6).
+   map → services var(--space-5). card gap var(--space-4).
+--------------------------------------------------------------------------- */
+.visit-cards {
+  --mc-cream: #FFF8EE;
+  --mc-chocolate: #2B170D;
+  --mc-gold: #FDB813;
+  --mc-caramel: #7A4B2B;
+  --mc-white: #FFFFFF;
+  --mc-muted: #5F4632;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.visit-card {
+  background: var(--mc-cream);
+  border: 1.5px solid var(--mc-chocolate);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* Grid items default to min-width:auto, so a track never shrinks below
+     its content's min-content size — without this, long unwrapped content
+     (e.g. the hours row) forces .visit-cards wider than the viewport. */
+  min-width: 0;
+  transition: transform var(--dur-base) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard), border-color var(--dur-base) var(--ease-standard);
+}
+.visit-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-raised); border-color: var(--mc-gold); }
+.visit-card .icon { width: 26px; height: 26px; color: var(--mc-caramel); }
+.visit-card h3 { font-family: var(--font-display); font-size: var(--fs-subtitle); font-weight: 600; color: var(--mc-chocolate); }
+.visit-card p { font-size: var(--fs-body-sm); color: var(--mc-muted); line-height: 1.5; }
+.visit-card a { font-size: var(--fs-body-sm); color: var(--mc-chocolate); font-weight: 600; text-decoration: none; }
+.visit-card a:hover { color: var(--mc-caramel); }
+.visit-card__highlight { font-weight: 700; color: var(--mc-chocolate) !important; }
+.visit-card .visit-hours-row { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-body-sm); color: var(--mc-muted); font-variant-numeric: tabular-nums; }
+.visit-card .status-pill { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); }
+.visit-card .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mc-caramel); flex: none; }
+.visit-card .status-dot.open { background: #4C8C5A; }
+.visit-card .btn { margin-top: var(--space-1); align-self: flex-start; }
+
+.visit-map-block { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
+.visit-map {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 320px;
+  background: var(--wh-surface);
+  border: 1px solid var(--wh-border);
+}
+.visit-map .map-fill { position: absolute; inset: 0; background: radial-gradient(circle at 60% 40%, var(--wh-surface-raised), var(--wh-bg)); }
+.visit-map .pin { position: absolute; top: 44%; left: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--wh-gold); box-shadow: 0 0 0 8px rgba(253, 184, 19, 0.2); }
+.visit-map .map-label { position: absolute; bottom: var(--space-3); left: var(--space-3); font-size: 0.75rem; color: var(--wh-text-primary); background: var(--wh-overlay); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); }
+
+.visit-services { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-6); }
+.visit-services .pill { gap: var(--space-2); }
+.visit-services .pill svg { width: 14px; height: 14px; color: var(--wh-gold); flex: none; }
+
+@media (max-width: 1024px) { .visit-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .visit-cards { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .visit-map { min-height: 260px; } }
+
+/* ---------------------------------------------------------------------------
+   FOOTER
+   SPACING: padding-top var(--space-8), padding-bottom var(--space-5).
+--------------------------------------------------------------------------- */
+.site-footer { border-top: 1px solid var(--wh-border); padding-top: var(--space-8); padding-bottom: var(--space-5); }
+.footer-top { display: flex; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap; }
+.footer-brand { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; }
+.footer-brand span { color: var(--wh-gold); }
+.footer-tag { margin-top: var(--space-2); color: var(--wh-text-muted); font-size: var(--fs-body-sm); max-width: 32ch; }
+.footer-links { display: flex; gap: var(--space-8); }
+.footer-col h4 { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: var(--ls-wide); color: var(--wh-caramel); margin-bottom: var(--space-3); font-weight: 600; }
+.footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.footer-col a { color: var(--wh-text-secondary); text-decoration: none; font-size: var(--fs-body-sm); }
+.footer-col a:hover { color: var(--wh-text-primary); }
+.footer-bottom { margin-top: var(--space-7); padding-top: var(--space-4); border-top: 1px solid var(--wh-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+.footer-bottom p { font-size: var(--fs-caption); color: var(--wh-text-muted); display: flex; align-items: center; gap: 6px; }
+.footer-bottom .heart-icon { width: 13px; height: 13px; color: var(--wh-berry); }
+.social-row { display: flex; gap: var(--space-2); }
+.social-row .btn--icon svg { width: 18px; height: 18px; }
+
+@media (max-width: 700px) { .footer-top { flex-direction: column; gap: var(--space-5); } .footer-links { gap: var(--space-5); } }

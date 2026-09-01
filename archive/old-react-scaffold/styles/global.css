@@ -1,0 +1,6 @@
+/* Reuses the existing design system verbatim — cascade order matters. */
+@import "../../design-system/tokens.css";
+@import "../../design-system/layout.css";
+@import "../../design-system/components.css";
+@import "../../design-system/motion.css";
+@import "../../design-system/homepage.css";

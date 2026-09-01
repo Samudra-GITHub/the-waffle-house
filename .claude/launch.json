@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "waffle-house-vite",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5511
+    },
+    {
+      "name": "static-site-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5522", "--directory", "static-site"],
+      "port": 5522
+    }
+  ]
+}
