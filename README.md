@@ -26,22 +26,19 @@ The Waffle House is a marketing site for a local dessert café. It presents the 
 
 ## Preview
 
-Photography from the site's own `public/assets/`:
+<p align="center">
+  <img src="docs/screenshots/desktop-hero.webp" width="880" alt="The Waffle House home page: hero with the waffle stack" />
+</p>
 
-<table>
-  <tr>
-    <td align="center"><img src="public/assets/menu/classic-belgian.webp" width="190" alt="Belgian Classic" /><br /><sub>Belgian Classic</sub></td>
-    <td align="center"><img src="public/assets/menu/royal-biscoff.webp" width="190" alt="Royal Biscoff" /><br /><sub>Royal Biscoff</sub></td>
-    <td align="center"><img src="public/assets/menu/blueberry-classic.webp" width="190" alt="Blueberry Classic" /><br /><sub>Blueberry Classic</sub></td>
-    <td align="center"><img src="public/assets/menu/naked-nutella.webp" width="190" alt="Naked Nutella" /><br /><sub>Naked Nutella</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="public/assets/menu/red-velvet-heart.webp" width="190" alt="Red Velvet Heart" /><br /><sub>Red Velvet Heart</sub></td>
-    <td align="center"><img src="public/assets/menu/milk-chocolate-overload.webp" width="190" alt="Milk Chocolate Overload" /><br /><sub>Milk Chocolate Overload</sub></td>
-    <td align="center"><img src="public/assets/menu/chocolate-chip.webp" width="190" alt="Chocolate Chip Waffle" /><br /><sub>Chocolate Chip Waffle</sub></td>
-    <td align="center"><img src="public/assets/story/interior-counter-02.webp" width="190" alt="Interior counter" /><br /><sub>The counter</sub></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="docs/screenshots/menu-carousel.gif" width="640" alt="The menu carousel stepping through the signature waffles" />
+  <br />
+  <sub>The menu carousel, recorded from the running app.</sub>
+</p>
+
+| Gallery | Mobile |
+| :-- | :-- |
+| <img src="docs/screenshots/desktop-gallery.webp" width="520" alt="Gallery section" /> | <img src="docs/screenshots/mobile-hero.webp" width="200" alt="Mobile hero" /> |
 
 ## Features
 
