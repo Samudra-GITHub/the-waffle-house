@@ -22,3 +22,12 @@ static-site/
 node_modules/
 dist/
 .env
+
+# Added by repository cleanup
+CLAUDE.md
+AGENTS.md
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.tsbuildinfo
