@@ -1,10 +1,47 @@
+<div align="center">
+
+<img src="public/assets/hero/hero-waffle-stack-01.png" width="300" alt="A stack of Belgian waffles with berries and syrup" />
+
 # The Waffle House
 
-> A single-page, animation-rich website for a Belgian waffle and dessert café in Shivmandir, Siliguri.
+**A single-page site for a Belgian waffle and dessert café in Shivmandir, Siliguri.**
+
+Animated hero · menu carousel · gallery with lightbox · reviews · map and Instagram
+
+<br />
+
+**[Overview](#overview)** &nbsp;·&nbsp; **[Features](#features)** &nbsp;·&nbsp; **[Getting started](#getting-started)** &nbsp;·&nbsp; **[Architecture](#architecture)** &nbsp;·&nbsp; **[Structure](#project-structure)**
+
+<br />
+
+![React](https://img.shields.io/badge/React-18-20232a?style=flat-square&logo=react&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat-square&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-6-646cff?style=flat-square&logo=vite&logoColor=white) ![Tailwind](https://img.shields.io/badge/Tailwind-3-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white) ![Framer_Motion](https://img.shields.io/badge/Framer_Motion-animation-0055ff?style=flat-square&logo=framer&logoColor=white)
+
+</div>
+
+---
 
 ## Overview
 
 The Waffle House is a marketing site for a local dessert café. It presents the signature menu, the café's story, a photo gallery, customer reviews and visit details (map and Instagram) in one scrolling page. The first version was vanilla HTML/CSS/JS and was later migrated to **React + Framer Motion**. The original interaction layer is kept for reference in `scripts/legacy-main.js` and is not loaded by the app.
+
+## Preview
+
+Photography from the site's own `public/assets/`:
+
+<table>
+  <tr>
+    <td align="center"><img src="public/assets/menu/classic-belgian.webp" width="190" alt="Belgian Classic" /><br /><sub>Belgian Classic</sub></td>
+    <td align="center"><img src="public/assets/menu/royal-biscoff.webp" width="190" alt="Royal Biscoff" /><br /><sub>Royal Biscoff</sub></td>
+    <td align="center"><img src="public/assets/menu/blueberry-classic.webp" width="190" alt="Blueberry Classic" /><br /><sub>Blueberry Classic</sub></td>
+    <td align="center"><img src="public/assets/menu/naked-nutella.webp" width="190" alt="Naked Nutella" /><br /><sub>Naked Nutella</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="public/assets/menu/red-velvet-heart.webp" width="190" alt="Red Velvet Heart" /><br /><sub>Red Velvet Heart</sub></td>
+    <td align="center"><img src="public/assets/menu/milk-chocolate-overload.webp" width="190" alt="Milk Chocolate Overload" /><br /><sub>Milk Chocolate Overload</sub></td>
+    <td align="center"><img src="public/assets/menu/chocolate-chip.webp" width="190" alt="Chocolate Chip Waffle" /><br /><sub>Chocolate Chip Waffle</sub></td>
+    <td align="center"><img src="public/assets/story/interior-counter-02.webp" width="190" alt="Interior counter" /><br /><sub>The counter</sub></td>
+  </tr>
+</table>
 
 ## Features
 
@@ -48,7 +85,7 @@ the-waffle-house/
 └── package.json
 ```
 
-## Installation
+## Getting Started
 
 Requires Node.js and npm.
 
@@ -70,7 +107,7 @@ npm run preview   # preview the production build locally
 
 No environment variables or secrets are required. Menu items, gallery images and reviews are edited in `src/data/`, and design tokens in `design-system/tokens.css`.
 
-## How It Works
+## Architecture
 
 `src/App.tsx` composes the page from section components. `src/styles/global.css` imports the files in `design-system/`, which remain the single source of truth for tokens and layout. Animation components in `src/components/animations/` implement the decorative effects.
 
